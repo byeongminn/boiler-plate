@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
+const config = require("./config/key");
 
 const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://bm:1q2w3e4r@boilerplate.nm2gv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+mongoose.connect(config.mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
