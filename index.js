@@ -1,7 +1,11 @@
 const express = require('express');
 const app = express();
 const config = require("./config/key");
+const cookieParser = require("cookie-parser");
+
 const { User } = require('./models/User');
+
+app.use(cookieParser());
 
 const mongoose = require("mongoose");
 mongoose.connect(config.mongoURI, {
@@ -43,7 +47,12 @@ app.post("/login", (req, res) => {
 
       // 비밀번호까지 일치한다면 토큰을 생성한다.
       user.generateToken((err, user) => {
-        
+        if (err) return res.status(400).send(err);
+
+        // 토큰을 저장한다. 쿠키 or 로컬스토리지 or ...
+        res.cookie("x_auth", user.token)
+        .status(200)
+        .json({ loginSuccess: true, userId: user._id });
       })
     })
   })
