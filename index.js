@@ -2,11 +2,13 @@ const express = require('express');
 const app = express();
 const config = require("./config/key");
 const cookieParser = require("cookie-parser");
-
+const { auth } = require("./middleware/auth");
 const { User } = require('./models/User');
 
+app.use(express.json());
 app.use(cookieParser());
 
+// mongoDB 연결
 const mongoose = require("mongoose");
 mongoose.connect(config.mongoURI, {
     useNewUrlParser: true,
@@ -20,7 +22,7 @@ app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
-app.post("/register", (req, res) => {
+app.post("/api/users/register", (req, res) => {
   const user = new User(req.body);
 
   user.save((err, userInfo) => {
@@ -31,7 +33,7 @@ app.post("/register", (req, res) => {
   })
 })
 
-app.post("/login", (req, res) => {
+app.post("/api/users/login", (req, res) => {
   // 요청된 이메일을 데이터베이스에 있는지 찾는다.
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
@@ -56,12 +58,19 @@ app.post("/login", (req, res) => {
       })
     })
   })
+})
 
-
-
-
+app.get("/api/users/auth", auth , (req, res) => {
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    role: req.user.role
+  })
 })
 
 app.listen(5000, function () {
-  console.log('Example app listening on port 5000!');
+  console.log('Connected "http://localhost:5000"');
 });
