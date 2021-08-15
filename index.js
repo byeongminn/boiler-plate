@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
-const config = require("./config/key");
+const config = require("./server/config/key");
 const cookieParser = require("cookie-parser");
-const { auth } = require("./middleware/auth");
-const { User } = require('./models/User');
+const { auth } = require("./server/middleware/auth");
+const { User } = require('./server/models/User');
 
 app.use(express.json());
 app.use(cookieParser());
