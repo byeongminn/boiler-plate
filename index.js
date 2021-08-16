@@ -22,6 +22,8 @@ app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
+app.get("/api/hello", (req, res) => res.send("Hello world!"));
+
 app.post("/api/users/register", (req, res) => {
   const user = new User(req.body);
 
